@@ -1,0 +1,17 @@
+﻿  Main.cpp
+c:\programming\c++\collision detection (minkowski difference)\sdl sample project v1.0\Objects.h(47): warning C4244: 'argument': conversion from 'float' to 'Sint16', possible loss of data
+Main.cpp(88): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Main.cpp(44): warning C4101: 'result': unreferenced local variable
+c:\programming\c++\collision detection (minkowski difference)\sdl sample project v1.0\vec2.h(49): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  c:\programming\c++\collision detection (minkowski difference)\sdl sample project v1.0\vec2.h(48): note: while compiling class template member function 'vec2<float> vec2<float>::operator /(double)'
+  c:\programming\c++\collision detection (minkowski difference)\sdl sample project v1.0\matrix.h(33): note: see reference to function template instantiation 'vec2<float> vec2<float>::operator /(double)' being compiled
+  c:\programming\c++\collision detection (minkowski difference)\sdl sample project v1.0\matrix.h(6): note: see reference to class template instantiation 'vec2<float>' being compiled
+c:\programming\c++\collision detection (minkowski difference)\sdl sample project v1.0\vec2.h(46): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  c:\programming\c++\collision detection (minkowski difference)\sdl sample project v1.0\vec2.h(45): note: while compiling class template member function 'vec2<float> vec2<float>::operator *(double)'
+  c:\programming\c++\collision detection (minkowski difference)\sdl sample project v1.0\matrix.h(75): note: see reference to function template instantiation 'vec2<float> vec2<float>::operator *(double)' being compiled
+  Generating code
+  0 of 128 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  SDL Sample Project V1.0.vcxproj -> C:\Programming\C++\Collision Detection (Minkowski Difference)\Release\Collision Shenanigans.exe
