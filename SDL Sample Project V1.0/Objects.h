@@ -7,6 +7,7 @@
 #include <iostream>
 #include <SDL2_gfxPrimitives.h>
 #include "line.h"
+#include "lineSegment.h"
 
 class object {
 
@@ -98,10 +99,6 @@ public:
 		if ((pow(a.pos.x - closestPt.x, 2) + pow(a.pos.y - closestPt.y, 2)) < pow(a.rad, 2)) {
 			return true;
 		}
-		else {
-			return false;
-		}
-
 	}
 
 };
@@ -160,41 +157,54 @@ public:
 	}
 
 	bool collide(circle a) {
+
+		if (collidePoint(a.pos)) {
+			std::cout << "Inner Collision" << std::endl;
+		}
+
 		return (collidePoint(a.pos) ||
-			lineSegment(points[0], points[1]).distanceToPoint(a.pos) < a.rad ||
-			lineSegment(points[1], points[2]).distanceToPoint(a.pos) < a.rad ||
-			lineSegment(points[2], points[3]).distanceToPoint(a.pos) < a.rad ||
-			lineSegment(points[3], points[0]).distanceToPoint(a.pos) < a.rad);
+			lineSegment(points[0], points[1]).distanceToPoint(a.pos) <= a.rad ||
+			lineSegment(points[1], points[2]).distanceToPoint(a.pos) <= a.rad ||
+			lineSegment(points[2], points[3]).distanceToPoint(a.pos) <= a.rad ||
+			lineSegment(points[3], points[0]).distanceToPoint(a.pos) <= a.rad);
 	}
 	bool collidePoint(vec2<float> a) {
+
+		//Need to handle the case of the ray passing through a corner
 		line ray(vec2<float>(1, 0), a);
 		calculatePoints();
 
-		int IveGotBroadsInKanata = 0;
+		int i = 0;
+
+		std::vector<vec2<float>> pointsOfIntersection;
 
 
 		if (ray.segmentCollide(lineSegment(points[0], points[1]))) {
 			if (ray.collisionPoint(lineSegment(points[0], points[1])).x > pos.x) {
-				IveGotBroadsInKanata++;
+				pointsOfIntersection.push_back(ray.collisionPoint(lineSegment(points[0], points[1])));
+				i++;
 			}
 		}
 		if (ray.segmentCollide(lineSegment(points[1], points[2]))) {
-			if (ray.collisionPoint(lineSegment(points[1], points[2])).x > pos.x) {
-				IveGotBroadsInKanata++;
+			if (ray.collisionPoint(lineSegment(points[1], points[2])).x > pos.x 
+				&& std::find(pointsOfIntersection.begin(),pointsOfIntersection.end(), ray.collisionPoint(lineSegment(points[1], points[2]))) != pointsOfIntersection.end()) {
+				i++;
 			}
 		}
 		if (ray.segmentCollide(lineSegment(points[2], points[3]))) {
-			if (ray.collisionPoint(lineSegment(points[2], points[3])).x > pos.x) {
-				IveGotBroadsInKanata++;
+			if (ray.collisionPoint(lineSegment(points[2], points[3])).x > pos.x
+				&& std::find(pointsOfIntersection.begin(), pointsOfIntersection.end(), ray.collisionPoint(lineSegment(points[1], points[2]))) != pointsOfIntersection.end()) {
+				i++;
 			}
 		}
 		if (ray.segmentCollide(lineSegment(points[3], points[0]))) {
-			if (ray.collisionPoint(lineSegment(points[3], points[0])).x > pos.x) {
-				IveGotBroadsInKanata++;
+			if (ray.collisionPoint(lineSegment(points[3], points[0])).x > pos.x
+				&& std::find(pointsOfIntersection.begin(), pointsOfIntersection.end(), ray.collisionPoint(lineSegment(points[1], points[2]))) != pointsOfIntersection.end()) {
+				i++;
 			}
 		}
 
-		if (IveGotBroadsInKanata % 2 == 0) {
+		if (i % 2 == 0) {
 			return false;
 		}
 		else {

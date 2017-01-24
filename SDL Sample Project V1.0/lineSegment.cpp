@@ -30,3 +30,23 @@ float lineSegment::distanceToPoint(vec2<float> p) {
 	}
 
 }
+
+void lineSegment::draw(SDL_Renderer *rend) {
+	SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
+	SDL_RenderDrawLine(rend, begin.x, begin.y, end.x, end.y);
+}
+
+void lineSegment::moveTo(float x, float y) {
+	vec2<float> delta = end - begin;
+	begin.x = x;
+	begin.y = y;
+	end = begin + delta;
+}
+
+bool lineSegment::pointBelongsTo(vec2<float> v) {
+	line a = line(*this);
+	if (vec2<float>::dot(line(*this).direction, vec2<float>(a.point.y - v.y, v.x - a.point.x)) == 0 && v.x >= std::min(begin.x, end.x) && v.x <= std::max(begin.x, end.x) && v.y >= std::min(begin.y, end.y) && v.x <= std::max(begin.y, end.y)) {
+		return true;
+	}
+	return false;
+}

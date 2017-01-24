@@ -2,6 +2,7 @@
 #include "vec2.h"
 #include "lineSegment.h"
 #include <algorithm>
+#include <SDL.h>
 
 class lineSegment;
 class line;
@@ -21,4 +22,7 @@ public:
 
 	vec2<float> collisionPoint(lineSegment a);
 
+	vec2<float> collisionPoint(line a);
+
+	void draw(SDL_Renderer *rend);
 };

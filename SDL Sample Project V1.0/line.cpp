@@ -19,15 +19,16 @@ line::line(lineSegment a) {
 }
 
 bool line::segmentCollide(lineSegment a) {
-	if ((direction.dot(direction, a.begin - point) > 0
-		&& direction.dot(direction, a.end - point) > 0) ||
-		(direction.dot(direction, a.begin - point) < 0
-			&& direction.dot(direction, a.end - point) < 0)) {
+	if ((vec2<float>::dot(direction, a.begin - point) > 0
+		&& vec2<float>::dot(direction, a.end - point) > 0) ||
+		(vec2<float>::dot(direction, a.begin - point) < 0
+			&& vec2<float>::dot(direction, a.end - point) < 0)) {
 		return false;
 	}
-	else {
-		return true;
+	if (collisionPoint(line(a)).x == point.x && collisionPoint(line(a)).y == point.y && !(a.pointBelongsTo(point))) {
+		return false;
 	}
+	return true;
 }
 
 vec2<float> line::collisionPoint(lineSegment a) {
@@ -35,4 +36,14 @@ vec2<float> line::collisionPoint(lineSegment a) {
 		(point + direction *
 			(point.cross((a.begin - point), (a.end - a.begin))
 				/ (direction.cross(direction, a.end - a.begin))));
+}
+
+vec2<float> line::collisionPoint(line a) {
+	float t;
+	t = -((direction.x*(point.y+a.point.y))/(direction.y*(a.direction.x - a.direction.y/direction.y)));
+	return a.direction*t + a.point;
+}
+
+void line::draw(SDL_Renderer *rend) {
+	//THIS IS INCOMPLETE
 }

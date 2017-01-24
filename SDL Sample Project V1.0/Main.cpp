@@ -1,5 +1,3 @@
-//I'VE GOT BROADS IN KANATA
-
 //Using SDL and standard IO
 #include <SDL.h>
 #include <stdio.h>
@@ -41,6 +39,7 @@ int main(int argc, char* args[])
 
 	OBB testOBB(vec2<float>(0, 0), vec2<float>(0, 0), 1, 100, 50, 0.5);
 	circle testCircle(vec2<float>(100, 100), vec2<float>(0, 0), 1, 50);
+	lineSegment testLineSeg(vec2<float>(0, 400), vec2<float>(40, 400));
 	int result;
 
 	//Start up SDL and create window
@@ -83,6 +82,11 @@ int main(int argc, char* args[])
 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 				SDL_RenderClear(renderer);
 
+				//Move line segment
+				//testLineSeg.moveTo(mousePosition.x, mousePosition.y);
+				//Draw line segment
+				//testLineSeg.draw(renderer);
+
 				//Move OBB
 
 				testOBB.moveTo(mousePosition.x, mousePosition.y);
@@ -94,7 +98,7 @@ int main(int argc, char* args[])
 				testCircle.draw(renderer);
 
 				//Test collision
-				std::cout << testOBB.collide(testCircle) << std::endl;
+				std::cout <<std::boolalpha<< testOBB.collide(testCircle) << std::endl;
 
 				//Update renderer
 				SDL_RenderPresent(renderer);
