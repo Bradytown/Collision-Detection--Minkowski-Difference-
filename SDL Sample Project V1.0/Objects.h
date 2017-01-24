@@ -187,19 +187,19 @@ public:
 		}
 		if (ray.segmentCollide(lineSegment(points[1], points[2]))) {
 			if (ray.collisionPoint(lineSegment(points[1], points[2])).x > pos.x 
-				&& std::find(pointsOfIntersection.begin(),pointsOfIntersection.end(), ray.collisionPoint(lineSegment(points[1], points[2]))) != pointsOfIntersection.end()) {
+				&& std::any_of(pointsOfIntersection.begin(), pointsOfIntersection.end(), ray.collisionPoint(lineSegment(points[1], points[2])))) {
 				i++;
 			}
 		}
 		if (ray.segmentCollide(lineSegment(points[2], points[3]))) {
 			if (ray.collisionPoint(lineSegment(points[2], points[3])).x > pos.x
-				&& std::find(pointsOfIntersection.begin(), pointsOfIntersection.end(), ray.collisionPoint(lineSegment(points[1], points[2]))) != pointsOfIntersection.end()) {
+				&& std::any_of(pointsOfIntersection.begin(), pointsOfIntersection.end(), ray.collisionPoint(lineSegment(points[1], points[2])))) {
 				i++;
 			}
 		}
 		if (ray.segmentCollide(lineSegment(points[3], points[0]))) {
 			if (ray.collisionPoint(lineSegment(points[3], points[0])).x > pos.x
-				&& std::find(pointsOfIntersection.begin(), pointsOfIntersection.end(), ray.collisionPoint(lineSegment(points[1], points[2]))) != pointsOfIntersection.end()) {
+				&& std::any_of(pointsOfIntersection.begin(), pointsOfIntersection.end(), ray.collisionPoint(lineSegment(points[1], points[2])))) {
 				i++;
 			}
 		}
