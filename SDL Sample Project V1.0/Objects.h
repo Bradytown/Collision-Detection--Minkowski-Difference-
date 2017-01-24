@@ -8,6 +8,7 @@
 #include <SDL2_gfxPrimitives.h>
 #include "line.h"
 #include "lineSegment.h"
+#include <set>
 
 class object {
 
@@ -174,37 +175,42 @@ public:
 		line ray(vec2<float>(1, 0), a);
 		calculatePoints();
 
-		int i = 0;
+		std::vector<vec2<float>> poi;
+		lineSegment segments[4];
+		segments[0] = lineSegment(points[0], points[1]);
+		segments[1] = lineSegment(points[1], points[2]);
+		segments[2] = lineSegment(points[2], points[3]);
+		segments[3] = lineSegment(points[3], points[0]);
 
-		std::vector<vec2<float>> pointsOfIntersection;
 
-
-		if (ray.segmentCollide(lineSegment(points[0], points[1]))) {
-			if (ray.collisionPoint(lineSegment(points[0], points[1])).x > pos.x) {
-				pointsOfIntersection.push_back(ray.collisionPoint(lineSegment(points[0], points[1])));
-				i++;
+		if (ray.segmentCollide(segments[0])) {
+			if (ray.collisionPoint(segments[0]).x > pos.x) {
+				poi.push_back(ray.collisionPoint(segments[0]));
 			}
 		}
-		if (ray.segmentCollide(lineSegment(points[1], points[2]))) {
-			if (ray.collisionPoint(lineSegment(points[1], points[2])).x > pos.x 
-				&& std::any_of(pointsOfIntersection.begin(), pointsOfIntersection.end(), ray.collisionPoint(lineSegment(points[1], points[2])))) {
-				i++;
+		if (ray.segmentCollide(segments[1])) {
+			if (ray.collisionPoint(segments[1]).x > pos.x){
+				if (std::find(poi.begin(), poi.end(),ray.collisionPoint(segments[1])) != poi.end())
+				poi.push_back(ray.collisionPoint(segments[1]));
 			}
 		}
-		if (ray.segmentCollide(lineSegment(points[2], points[3]))) {
-			if (ray.collisionPoint(lineSegment(points[2], points[3])).x > pos.x
-				&& std::any_of(pointsOfIntersection.begin(), pointsOfIntersection.end(), ray.collisionPoint(lineSegment(points[1], points[2])))) {
-				i++;
+		if (ray.segmentCollide(segments[2])) {
+			if (ray.collisionPoint(segments[2]).x > pos.x) {
+				if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[2])) != poi.end())
+				poi.push_back(ray.collisionPoint(segments[2]));
 			}
 		}
-		if (ray.segmentCollide(lineSegment(points[3], points[0]))) {
-			if (ray.collisionPoint(lineSegment(points[3], points[0])).x > pos.x
-				&& std::any_of(pointsOfIntersection.begin(), pointsOfIntersection.end(), ray.collisionPoint(lineSegment(points[1], points[2])))) {
-				i++;
+		if (ray.segmentCollide(segments[3])) {
+			if (ray.collisionPoint(segments[3]).x > pos.x) {
+				if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[3])) != poi.end())
+				poi.push_back(ray.collisionPoint(segments[3]));
 			}
 		}
 
-		if (i % 2 == 0) {
+		std::vector<vec2<float>>::iterator r, w;
+		std::set<vec2<float>> tmpset;
+
+		if ((int)(poi.size()) % 2 == 0) {
 			return false;
 		}
 		else {
