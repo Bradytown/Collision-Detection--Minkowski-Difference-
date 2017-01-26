@@ -147,6 +147,7 @@ public:
 	}
 
 	void draw(SDL_Renderer *rend) {
+		
 		SDL_Point drawpts[5];
 		calculatePoints();
 		for (int i = 0; i < 4; i++) {
@@ -155,13 +156,24 @@ public:
 		drawpts[4] = drawpts[0];
 		SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
 		SDL_RenderDrawLines(rend, drawpts, 5);
+		
 	}
 
 	bool collide(circle a) {
 
-		if (collidePoint(a.pos)) {
-			std::cout << "Inner Collision" << std::endl;
+		calculatePoints();
+		/*
+		for (int i = 0; i < 4; i++) {
+			std::cout << i << " :" << points[i].x << ", " << points[i].y << std::endl;
 		}
+		
+
+		std::cout << "Circle centre collide: " << collidePoint(a.pos) << std::endl;
+		std::cout << "Line Segment 1 collide: " << lineSegment(points[0], points[1]).distanceToPoint(a.pos) << std::endl;
+		std::cout << "Line Segment 2 collide: " << lineSegment(points[1], points[2]).distanceToPoint(a.pos) << std::endl;
+		std::cout << "Line Segment 3 collide: " << lineSegment(points[2], points[3]).distanceToPoint(a.pos) << std::endl;
+		std::cout << "Line Segment 4 collide: " << lineSegment(points[3], points[0]).distanceToPoint(a.pos) << std::endl;
+		*/
 
 		return (collidePoint(a.pos) ||
 			lineSegment(points[0], points[1]).distanceToPoint(a.pos) <= a.rad ||

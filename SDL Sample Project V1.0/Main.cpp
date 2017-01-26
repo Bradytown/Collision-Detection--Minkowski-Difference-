@@ -38,8 +38,14 @@ int main(int argc, char* args[])
 {
 
 	OBB testOBB(vec2<float>(0, 0), vec2<float>(0, 0), 1, 100, 50, 0.5);
-	circle testCircle(vec2<float>(100, 100), vec2<float>(0, 0), 1, 50);
-	lineSegment testLineSeg(vec2<float>(0, 400), vec2<float>(40, 400));
+	circle testCircle(vec2<float>(200, 200), vec2<float>(0, 0), 1, 50);
+	lineSegment testLineSeg(vec2<float>(0, 400), vec2<float>(40, 450));
+
+	vec2<float> pointCentre(2, 2);
+	lineSegment distanceTestLineSeg(vec2<float>(2,1),vec2<float>(3,3));
+
+	vec2<float> poi = line(distanceTestLineSeg).collisionPoint(line(vec2<float>(-2, 1), vec2<float>(2, 2)));
+	
 	int result;
 
 	//Start up SDL and create window
@@ -82,26 +88,33 @@ int main(int argc, char* args[])
 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 				SDL_RenderClear(renderer);
 
+				//Move OBB
+
+				testOBB.moveTo(mousePosition.x, mousePosition.y);
+
+
+				//Draw circle
+				testCircle.draw(renderer);
+
+
+				//Draw obb
+				testOBB.draw(renderer);
+
+				//Test collision
+				//testOBB.collide(testCircle);
+				std::cout <<std::boolalpha<< testOBB.collide(testCircle) << std::endl;
+
 				//Move line segment
 				//testLineSeg.moveTo(mousePosition.x, mousePosition.y);
 				//Draw line segment
 				//testLineSeg.draw(renderer);
 
-				//Move OBB
-
-				testOBB.moveTo(mousePosition.x, mousePosition.y);
-
-				//Draw obb
-				testOBB.draw(renderer);
-
-				//Draw circle
-				testCircle.draw(renderer);
-
-				//Test collision
-				std::cout <<std::boolalpha<< testOBB.collide(testCircle) << std::endl;
+				//std::cout << testLineSeg.distanceToPoint(testCircle.pos) << std::endl;
 
 				//Update renderer
 				SDL_RenderPresent(renderer);
+
+				
 			}
 		}
 	}

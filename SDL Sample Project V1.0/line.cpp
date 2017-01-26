@@ -1,5 +1,6 @@
 #include "line.h"
 #include "lineSegment.h"
+#include <iostream>
 
 line::line() {
 	direction.x = 1;
@@ -19,16 +20,12 @@ line::line(lineSegment a) {
 }
 
 bool line::segmentCollide(lineSegment a) {
-	if ((vec2<float>::dot(direction, a.begin - point) > 0
-		&& vec2<float>::dot(direction, a.end - point) > 0) ||
-		(vec2<float>::dot(direction, a.begin - point) < 0
-			&& vec2<float>::dot(direction, a.end - point) < 0)) {
-		return false;
+	//Theoretically works
+	//Point belongs to is solid, so is collisionPoint
+	if (a.pointBelongsTo(collisionPoint(line(a)))) {
+		return true;
 	}
-	if (collisionPoint(line(a)).x == point.x && collisionPoint(line(a)).y == point.y && !(a.pointBelongsTo(point))) {
-		return false;
-	}
-	return true;
+	return false;
 }
 
 vec2<float> line::collisionPoint(lineSegment a) {
@@ -39,11 +36,13 @@ vec2<float> line::collisionPoint(lineSegment a) {
 }
 
 vec2<float> line::collisionPoint(line a) {
+	//Works perfectly if lines aren't parallel
 	float t;
-	t = -((direction.x*(point.y+a.point.y))/(direction.y*(a.direction.x - a.direction.y/direction.y)));
+	float denominator = (direction.x*a.direction.y - direction.y*a.direction.x);
+	t = (direction.y*(a.point.x-point.x)-direction.x*(a.point.y-point.y))/denominator;
 	return a.direction*t + a.point;
 }
 
-void line::draw(SDL_Renderer *rend) {
-	//THIS IS INCOMPLETE
+void line::draw(SDL_Renderer *rend){
+	//Still have no clue
 }
