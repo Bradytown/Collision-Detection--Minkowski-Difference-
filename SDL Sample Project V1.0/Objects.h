@@ -184,28 +184,12 @@ public:
 		segments[2] = lineSegment(points[2], points[3]);
 		segments[3] = lineSegment(points[3], points[0]);
 
-
-		if (ray.segmentCollide(segments[0])) {
-			if (ray.collisionPoint(segments[0]).x > pos.x) {
-				poi.push_back(ray.collisionPoint(segments[0]));
-			}
-		}
-		if (ray.segmentCollide(segments[1])) {
-			if (ray.collisionPoint(segments[1]).x > pos.x) {
-				if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[1])) == poi.end())
-					poi.push_back(ray.collisionPoint(segments[1]));
-			}
-		}
-		if (ray.segmentCollide(segments[2])) {
-			if (ray.collisionPoint(segments[2]).x > pos.x) {
-				if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[2])) == poi.end())
-					poi.push_back(ray.collisionPoint(segments[2]));
-			}
-		}
-		if (ray.segmentCollide(segments[3])) {
-			if (ray.collisionPoint(segments[3]).x > pos.x) {
-				if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[3])) == poi.end())
-					poi.push_back(ray.collisionPoint(segments[3]));
+		for (int i = 0; i < (int)poi.size(); i++) {
+			if (ray.segmentCollide(segments[i])) {
+				if (ray.collisionPoint(segments[i]).x > pos.x) {
+					if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[i])) != poi.end())
+					poi.push_back(ray.collisionPoint(segments[i]));
+				}
 			}
 		}
 
