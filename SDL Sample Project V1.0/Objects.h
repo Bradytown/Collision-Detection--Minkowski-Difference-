@@ -162,18 +162,6 @@ public:
 	bool collide(circle a) {
 
 		calculatePoints();
-		/*
-		for (int i = 0; i < 4; i++) {
-			std::cout << i << " :" << points[i].x << ", " << points[i].y << std::endl;
-		}
-		
-
-		std::cout << "Circle centre collide: " << collidePoint(a.pos) << std::endl;
-		std::cout << "Line Segment 1 collide: " << lineSegment(points[0], points[1]).distanceToPoint(a.pos) << std::endl;
-		std::cout << "Line Segment 2 collide: " << lineSegment(points[1], points[2]).distanceToPoint(a.pos) << std::endl;
-		std::cout << "Line Segment 3 collide: " << lineSegment(points[2], points[3]).distanceToPoint(a.pos) << std::endl;
-		std::cout << "Line Segment 4 collide: " << lineSegment(points[3], points[0]).distanceToPoint(a.pos) << std::endl;
-		*/
 
 		return (collidePoint(a.pos) ||
 			lineSegment(points[0], points[1]).distanceToPoint(a.pos) <= a.rad ||
@@ -218,9 +206,6 @@ public:
 				poi.push_back(ray.collisionPoint(segments[3]));
 			}
 		}
-
-		std::vector<vec2<float>>::iterator r, w;
-		std::set<vec2<float>> tmpset;
 
 		if ((int)(poi.size()) % 2 == 0) {
 			return false;
