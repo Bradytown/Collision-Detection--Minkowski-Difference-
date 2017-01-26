@@ -126,6 +126,10 @@ public:
 		rotation.pos = pos;
 	}
 
+	void moveTo(vec2<float> v) {
+		moveTo(v.x, v.y);
+	}
+
 	void calculatePoints() {
 		//find points in object space
 		//bottom left
@@ -179,10 +183,9 @@ public:
 
 		std::vector<vec2<float>> poi;
 		lineSegment segments[4];
-		segments[0] = lineSegment(points[0], points[1]);
-		segments[1] = lineSegment(points[1], points[2]);
-		segments[2] = lineSegment(points[2], points[3]);
-		segments[3] = lineSegment(points[3], points[0]);
+		for (int i = 0; i < (int)poi.size(); i++) {
+			segments[i] = lineSegment(points[i], points[(i+1)%poi.size()]);
+		}
 
 		for (int i = 0; i < (int)poi.size(); i++) {
 			if (ray.segmentCollide(segments[i])) {
@@ -205,12 +208,18 @@ public:
 
 class polygon : public object {
 
-public:
-	int vertices;
+private:
+	size_t vertices;
 	std::vector<vec2<float>> vertex;
 
-	polygon::polygon(vec2<float> p, vec2<float> v, float m, std::vector<vec2<float>> container) : object(p, v, m) {
-		//insert iterator here
+public:
+	
+	polygon::polygon(vec2<float> v, float m, std::vector<vec2<float>> container)
+		//Two giant lines are functions that return the minimum x value, and the minimum y value to use for the position variable
+		//i.e. the top left corner of the polygon
+		: object(vec2<float>((*std::min_element(container.begin(), container.end(), [](vec2<float> i, vec2<float> j) { return i.x < j.x; })).x, 
+		(*std::min_element(container.begin(), container.end(), [](vec2<float> i, vec2<float> j) { return i.y < j.y; })).y), 
+			v, m) {
 		std::vector<vec2<float>>::iterator current;
 		for (current = container.begin(); current != container.end(); current++)
 		{
@@ -219,4 +228,25 @@ public:
 		vertices = vertex.size();
 		objType = "polygon";
 	}
+
+	void draw(SDL_Renderer *rend) {
+		SDL_Point *drawpts = new SDL_Point[vertices+1];
+		for (int i = 0; i < 4; i++) {
+			drawpts[i] = { (int)(vertex[i].x + 0.5), (int)(vertex[i].y + 0.5) };
+		}
+		drawpts[vertices] = drawpts[0];
+		SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
+		SDL_RenderDrawLines(rend, drawpts, 5);
+	}
+
+	void moveTo(float x, float y) {
+
+	}
+
+	int vertices() {
+		return (int)vertices;
+	}
+
+
+
 };

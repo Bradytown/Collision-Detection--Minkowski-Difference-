@@ -44,6 +44,8 @@ int main(int argc, char* args[])
 	vec2<float> pointCentre(2, 2);
 	lineSegment distanceTestLineSeg(vec2<float>(2,1),vec2<float>(3,3));
 
+	polygon testPoly();
+
 	vec2<float> poi = line(distanceTestLineSeg).collisionPoint(line(vec2<float>(-2, 1), vec2<float>(2, 2)));
 	
 	int result;
