@@ -1,4 +1,6 @@
 #include "lineSegment.h"
+#include <iostream>
+#include <cmath>
 
 lineSegment::lineSegment() {
 	begin.x = 0;
@@ -14,14 +16,19 @@ lineSegment::lineSegment(vec2<float> b, vec2<float> e) {
 
 float lineSegment::distanceToPoint(vec2<float> p) {
 
+	//Distance to point is working as intended for flat lines
+	//Bug arises here from slanted lines
+
 	vec2<float> lineSegmentDirection(end - begin);
 
-	//check if line perpindicular to line segment originating from point intersects segment
+	//check if line perpendicular to line segment originating from point intersects segment
 	//if so, that distance is shortest
-	line perp(vec2<float>(-lineSegmentDirection.y, lineSegmentDirection.x), p);
+	line perp = line(vec2<float>(-lineSegmentDirection.y, lineSegmentDirection.x), p);
 
+	//Bug originates from this if statement
+	//Bug only affects lines that aren't aligned with one of the axis
 	if (perp.segmentCollide(*this)) {
-		vec2<float> collisionPoint = perp.collisionPoint(*this);
+		vec2<float> collisionPoint = perp.collisionPoint(line(*this));
 		return sqrt(pow(p.x - collisionPoint.x, 2) + pow(p.y - collisionPoint.y, 2));
 	}
 	//else, shortest distance is shortest between end points
@@ -45,7 +52,15 @@ void lineSegment::moveTo(float x, float y) {
 
 bool lineSegment::pointBelongsTo(vec2<float> v) {
 	line a = line(*this);
-	if (vec2<float>::dot(line(*this).direction, vec2<float>(a.point.y - v.y, v.x - a.point.x)) == 0 && v.x >= std::min(begin.x, end.x) && v.x <= std::max(begin.x, end.x) && v.y >= std::min(begin.y, end.y) && v.x <= std::max(begin.y, end.y)) {
+	vec2<float> perpDirection(v.y - a.point.y, a.point.x - v.x);
+	
+	float tol = std::pow(10,-3);
+
+	if ((std::abs(vec2<float>::dot(a.direction, perpDirection)) < tol //100% Rigourously Proven
+		&& v.x >= std::min(begin.x, end.x) && v.x <= std::max(begin.x, end.x)
+		&& v.y >= std::min(begin.y, end.y) && v.y <= std::max(begin.y, end.y)) || 
+		end == v ||
+		begin == v) { 
 		return true;
 	}
 	return false;
