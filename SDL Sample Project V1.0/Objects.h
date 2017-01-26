@@ -159,13 +159,11 @@ public:
 
 	bool collide(circle a) {
 
-<<<<<<< HEAD
 		calculatePoints();
-=======
+
 		if (collidePoint(a.pos)) {
 			std::cout << "Inner Collision" << std::endl;
 		}
->>>>>>> refs/remotes/origin/Point/OBB-Collision
 
 		return (collidePoint(a.pos) ||
 			lineSegment(points[0], points[1]).distanceToPoint(a.pos) <= a.rad ||
