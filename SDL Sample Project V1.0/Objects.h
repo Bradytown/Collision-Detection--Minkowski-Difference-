@@ -147,7 +147,6 @@ public:
 	}
 
 	void draw(SDL_Renderer *rend) {
-		
 		SDL_Point drawpts[5];
 		calculatePoints();
 		for (int i = 0; i < 4; i++) {
@@ -156,12 +155,17 @@ public:
 		drawpts[4] = drawpts[0];
 		SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
 		SDL_RenderDrawLines(rend, drawpts, 5);
-		
 	}
 
 	bool collide(circle a) {
 
+<<<<<<< HEAD
 		calculatePoints();
+=======
+		if (collidePoint(a.pos)) {
+			std::cout << "Inner Collision" << std::endl;
+		}
+>>>>>>> refs/remotes/origin/Point/OBB-Collision
 
 		return (collidePoint(a.pos) ||
 			lineSegment(points[0], points[1]).distanceToPoint(a.pos) <= a.rad ||
@@ -189,21 +193,21 @@ public:
 			}
 		}
 		if (ray.segmentCollide(segments[1])) {
-			if (ray.collisionPoint(segments[1]).x > pos.x){
-				if (std::find(poi.begin(), poi.end(),ray.collisionPoint(segments[1])) != poi.end())
-				poi.push_back(ray.collisionPoint(segments[1]));
+			if (ray.collisionPoint(segments[1]).x > pos.x) {
+				if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[1])) == poi.end())
+					poi.push_back(ray.collisionPoint(segments[1]));
 			}
 		}
 		if (ray.segmentCollide(segments[2])) {
 			if (ray.collisionPoint(segments[2]).x > pos.x) {
-				if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[2])) != poi.end())
-				poi.push_back(ray.collisionPoint(segments[2]));
+				if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[2])) == poi.end())
+					poi.push_back(ray.collisionPoint(segments[2]));
 			}
 		}
 		if (ray.segmentCollide(segments[3])) {
 			if (ray.collisionPoint(segments[3]).x > pos.x) {
-				if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[3])) != poi.end())
-				poi.push_back(ray.collisionPoint(segments[3]));
+				if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[3])) == poi.end())
+					poi.push_back(ray.collisionPoint(segments[3]));
 			}
 		}
 
