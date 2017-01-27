@@ -186,11 +186,11 @@ public:
 		for (int i = 0; i < 4; i++) {
 			segments[i] = lineSegment(points[i], points[(i+1)%4]);
 		}
-
+		std::cout << "==================" << std::endl;
 		for (int i = 0; i < 4; i++) {
 			if (ray.segmentCollide(segments[i])) {
-				if (ray.collisionPoint(segments[i]).x > pos.x) {
-					if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[i])) == poi.end())
+				if (ray.collisionPoint(segments[i]).x > a.x) {
+					if (!std::any_of(poi.begin(), poi.end(), [s = ray.collisionPoint(segments[i])](vec2<float> i) { return std::abs(i.x - s.x) <= 0.01; }))
 					poi.push_back(ray.collisionPoint(segments[i]));
 				}
 			}
@@ -216,6 +216,8 @@ private:
 	polygon monotoneTriangulate() {
 		std::vector<vec2<float>> sortedVertices = vertex;
 		std::sort(vertex.begin(), vertex.end(), [](vec2<float> i, vec2<float> j) { return (i.x < j.x); });
+		std::vector<lineSegment> polygonEdges = edges();
+		std::vector<lineSegment> diagonalVector;
 
 		std::vector<vec2<float>> stack;
 		stack.push_back(sortedVertices[0]);
@@ -225,20 +227,44 @@ private:
 			//Checking to see if v[i] is the the same chain as top(stack)
 			int indexOfV = std::distance(vertex.begin(), std::find(vertex.begin(), vertex.end(), sortedVertices[i]));
 			if (vertex[indexOfV - 1] == stack.back() || vertex[indexOfV + 1] == stack.back()) {
-				
+				stack.pop_back();
 				while (true) {
+					lineSegment diagonal(sortedVertices[i],stack.back());
 					//Need to check for legal diagonals
 					//If the centre of the diagonal is outside the shape or the diagonal collides with a line segment of the polygon, illegal
 					if (!collidePoint(vec2<float>((sortedVertices[i].x + stack.back().x) / 2, (sortedVertices[i].y + stack.back().y) / 2))) {
 						break;
 					}
+					bool legal = true;
 					//Loop through edges to see if the diagonal intersects any of them, not including the end points of the diagonal
+					for (int a = 0; a < polygonEdges.size(); a++) {
+						if (diagonal.collided(polygonEdges[a])) {
+							legal = false;
+						}
+					}
+					if (!legal) {
+						break;
+					}
+					else {
+						diagonalVector.push_back(diagonal);
+					}
 				}
 			}
+			//If not in the same chain
 			else {
-
+				vec2<float> vtop = stack.back();
+				for (int a = 0; a < stack.size(); a++) {
+					diagonalVector.push_back(lineSegment(sortedVertices[i],stack.back()));
+					stack.pop_back();
+				}
+				stack.push_back(vtop);
+				stack.push_back(sortedVertices[i]);
 			}
 		}
+
+		//Diagonals all set, need to create triangles
+
+
 	}
 
 	std::vector<lineSegment> edges() {
@@ -304,7 +330,7 @@ public:
 
 		for (int i = 0; i < vertices; i++) {
 			if (ray.segmentCollide(segments[i])) {
-				if (ray.collisionPoint(segments[i]).x > pos.x) {
+				if (ray.collisionPoint(segments[i]).x > a.x) {
 					if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[i])) == poi.end())
 						poi.push_back(ray.collisionPoint(segments[i]));
 				}
