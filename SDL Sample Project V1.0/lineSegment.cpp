@@ -65,3 +65,8 @@ bool lineSegment::pointBelongsTo(vec2<float> v) {
 	}
 	return false;
 }
+
+bool lineSegment::collided(lineSegment v) {
+	vec2<float> colPoint = line(*this).collisionPoint(line(v));
+	return(pointBelongsTo(colPoint) && v.pointBelongsTo(colPoint));
+}

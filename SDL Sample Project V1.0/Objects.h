@@ -183,14 +183,14 @@ public:
 
 		std::vector<vec2<float>> poi;
 		lineSegment segments[4];
-		for (int i = 0; i < (int)poi.size(); i++) {
-			segments[i] = lineSegment(points[i], points[(i+1)%poi.size()]);
+		for (int i = 0; i < 4; i++) {
+			segments[i] = lineSegment(points[i], points[(i+1)%4]);
 		}
 
-		for (int i = 0; i < (int)poi.size(); i++) {
+		for (int i = 0; i < 4; i++) {
 			if (ray.segmentCollide(segments[i])) {
 				if (ray.collisionPoint(segments[i]).x > pos.x) {
-					if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[i])) != poi.end())
+					if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[i])) == poi.end())
 					poi.push_back(ray.collisionPoint(segments[i]));
 				}
 			}
@@ -211,6 +211,43 @@ class polygon : public object {
 private:
 	size_t vertices;
 	std::vector<vec2<float>> vertex;
+	bool simple;
+
+	polygon monotoneTriangulate() {
+		std::vector<vec2<float>> sortedVertices = vertex;
+		std::sort(vertex.begin(), vertex.end(), [](vec2<float> i, vec2<float> j) { return (i.x < j.x); });
+
+		std::vector<vec2<float>> stack;
+		stack.push_back(sortedVertices[0]);
+		stack.push_back(sortedVertices[1]);
+
+		for (int i = 0; i < (int)sortedVertices.size(); i++) {
+			//Checking to see if v[i] is the the same chain as top(stack)
+			int indexOfV = std::distance(vertex.begin(), std::find(vertex.begin(), vertex.end(), sortedVertices[i]));
+			if (vertex[indexOfV - 1] == stack.back() || vertex[indexOfV + 1] == stack.back()) {
+				
+				while (true) {
+					//Need to check for legal diagonals
+					//If the centre of the diagonal is outside the shape or the diagonal collides with a line segment of the polygon, illegal
+					if (!collidePoint(vec2<float>((sortedVertices[i].x + stack.back().x) / 2, (sortedVertices[i].y + stack.back().y) / 2))) {
+						break;
+					}
+					//Loop through edges to see if the diagonal intersects any of them, not including the end points of the diagonal
+				}
+			}
+			else {
+
+			}
+		}
+	}
+
+	std::vector<lineSegment> edges() {
+		std::vector<lineSegment> segs;
+		for (int i = 0; i < vertices; i++) {
+			segs.push_back(lineSegment(vertex[i], vertex[(i + 1) % vertices]));
+		}
+		return segs;
+	}
 
 public:
 	
@@ -225,8 +262,26 @@ public:
 		{
 			vertex.push_back(*current);
 		}
+
 		vertices = vertex.size();
 		objType = "polygon";
+		simple = true;
+
+		lineSegment *segs = new lineSegment[vertices];
+
+		for (int i = 0; i < (int)vertices; i++) {
+			segs[i] = lineSegment(vertex[i],vertex[(i+1)%vertices]);
+			for (int a = 0; a < i; a++) {
+				if (segs[i].collided(segs[a])) {
+					simple = false;
+				}
+			}
+			if (!simple) {
+				vertex.clear();
+				break;
+			}
+		}
+
 	}
 
 	void draw(SDL_Renderer *rend) {
@@ -239,14 +294,37 @@ public:
 		SDL_RenderDrawLines(rend, drawpts, 5);
 	}
 
-	void moveTo(float x, float y) {
+	bool collidePoint(vec2<float> a) {
 
+		//Need to handle the case of the ray passing through a corner
+		line ray(vec2<float>(1, 0), a);
+
+		std::vector<vec2<float>> poi;
+		std::vector<lineSegment> segments = edges();
+
+		for (int i = 0; i < vertices; i++) {
+			if (ray.segmentCollide(segments[i])) {
+				if (ray.collisionPoint(segments[i]).x > pos.x) {
+					if (std::find(poi.begin(), poi.end(), ray.collisionPoint(segments[i])) == poi.end())
+						poi.push_back(ray.collisionPoint(segments[i]));
+				}
+			}
+		}
+
+		if ((int)(poi.size()) % 2 == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 
-	int vertices() {
+	int getVertices() {
 		return (int)vertices;
 	}
 
-
+	bool getSimple() {
+		return (bool)simple;
+	}
 
 };

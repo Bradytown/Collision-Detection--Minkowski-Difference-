@@ -21,4 +21,6 @@ public:
 
 	bool pointBelongsTo(vec2<float> p);
 
+	bool collided(lineSegment v);
+
 };
