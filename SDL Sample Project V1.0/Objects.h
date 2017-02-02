@@ -223,12 +223,15 @@ private:
 		stack.push_back(sortedVertices[0]);
 		stack.push_back(sortedVertices[1]);
 
-		for (int i = 0; i < (int)sortedVertices.size(); i++) {
+		for (int i = 2; i < (int)sortedVertices.size(); i++) {
 			//Checking to see if v[i] is the the same chain as top(stack)
 			int indexOfV = std::distance(vertex.begin(), std::find(vertex.begin(), vertex.end(), sortedVertices[i]));
 			if (vertex[indexOfV - 1] == stack.back() || vertex[indexOfV + 1] == stack.back()) {
+				vec2<float> lastLegal(NULL,NULL);
+				//Pop vj because it will cause an illegal diagonal
 				stack.pop_back();
 				while (true) {
+					//Diagonal from vi to top of the stack
 					lineSegment diagonal(sortedVertices[i],stack.back());
 					//Need to check for legal diagonals
 					//If the centre of the diagonal is outside the shape or the diagonal collides with a line segment of the polygon, illegal
@@ -246,12 +249,27 @@ private:
 						break;
 					}
 					else {
+						//If it's legal, add diagonal to diagonal list, and save as last legal
+						//Need to pop all legal diagonals, except for the last
 						diagonalVector.push_back(diagonal);
+						lastLegal = stack.back();
+						stack.pop_back();
 					}
 				}
+				//Restore the popped last legal
+				if (!(lastLegal.x == NULL || lastLegal.y == NULL)) {
+					stack.push_back(lastLegal);
+				}
+				//Push vi
+				stack.push_back(sortedVertices[i]);
+
+				//Need to make triangle creation algorithm for this case
+				//Use diagonals created, then pop them
+
 			}
 			//If not in the same chain
 			else {
+				//Save vtop
 				vec2<float> vtop = stack.back();
 				for (int a = 0; a < stack.size(); a++) {
 					diagonalVector.push_back(lineSegment(sortedVertices[i],stack.back()));
@@ -259,12 +277,13 @@ private:
 				}
 				stack.push_back(vtop);
 				stack.push_back(sortedVertices[i]);
+
+				//Need to set algorithm for making triangles in this case
+				//Use diagonals to make triangles, then pop them
+				
+
 			}
 		}
-
-		//Diagonals all set, need to create triangles
-
-
 	}
 
 	std::vector<lineSegment> edges() {
@@ -350,7 +369,7 @@ public:
 	}
 
 	bool getSimple() {
-		return (bool)simple;
+		return simple;
 	}
 
 };
